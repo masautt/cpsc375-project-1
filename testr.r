@@ -2,6 +2,10 @@ library(tidyverse)
 
 Confirmed <- read_csv("https://raw.githubusercontent.com/masautt/cpsc375-project-1/master/confirmed.csv") %>% gather(key="Date", value="NumConfirmed", -`Province/State`, -`Country/Region`, -`Lat`, -`Long`) %>% group_by(`Country/Region`, `Date`) %>% summarise(NumConfirmed = sum(NumConfirmed))
 
+Confirmed <- read_csv("https://raw.githubusercontent.com/masautt/cpsc375-project-1/master/confirmed.csv") %>% gather(key="Date", value="NumConfirmed", -`Province/State`, -`Country/Region`, -`Lat`, -`Long`) %>% select(`Province/State`, `Country/Region`, `Date`, `NumConfirmed`)
+
+
+
 Deaths <- read_csv("https://raw.githubusercontent.com/masautt/cpsc375-project-1/master/deaths.csv") %>% gather(key="Date", value="NumDeaths", -`Province/State`, -`Country/Region`, -`Lat`, -`Long`) %>% select(`Province/State`, `Country/Region`, `Date`, `NumDeaths`) %>% group_by(`Country/Region`, `Date`) %>% summarise(NumDeaths = sum(NumDeaths))
 
 
