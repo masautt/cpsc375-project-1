@@ -2,13 +2,14 @@ library(tidyverse)
 
 Confirmed <- read_csv("https://raw.githubusercontent.com/masautt/cpsc375-project-1/master/confirmed.csv") 
     %>% gather(key="Date", value="NumConfirmed", -`Province/State`, -`Country/Region`, -`Lat`, -`Long`) 
-    %>% select(`Province/State`, `Country` = `Country/Region`, `Date`, `NumConfirmed`)
+    %>% select(`Country` = `Country/Region`, `Date`, `NumConfirmed`)
     %>% filter(Country != "US")
     %>% mutate(Country = replace(Country, Country == "Republic of Korea", "South Korea"))
 
 Deaths <- read_csv("https://raw.githubusercontent.com/masautt/cpsc375-project-1/master/deaths.csv") 
     %>% gather(key="Date", value="NumDeaths", -`Province/State`, -`Country/Region`, -`Lat`, -`Long`) 
-    %>% select(`Province/State`, `Country` = `Country/Region`, `Date`, `NumDeaths`) 
+    %>% select(`Country` = `Country/Region`, `Date`, `NumDeaths`) 
+    %>% filter(Country != "US") 
     %>% mutate(Country = replace(Country, Country == "Republic of Korea", "South Korea"))
 
 Beds <- read_csv("https://raw.githubusercontent.com/masautt/cpsc375-project-1/master/hospitalbeds.csv") 
@@ -16,7 +17,8 @@ Beds <- read_csv("https://raw.githubusercontent.com/masautt/cpsc375-project-1/ma
     %>% filter(Country != "United States of America")
     %>% select(`Country`, `NumBeds` = `Hospital beds (per 10 000 population)`)
     %>% mutate(Country = replace(Country, Country == "Republic of Korea", "South Korea"))
-    %>% mutate(Country = replace(Country, Country == " Iran (Islamic Republic of)", "Iran"))
+    %>% mutate(Country = replace(Country, Country == "Iran (Islamic Republic of)", "Iran"))
+    %>% mutate(Country = replace(Country, Country == "United Kingdom of Great Britain and Northern Ireland", "United Kingdom"))
 
 Demographics <- read_csv("https://raw.githubusercontent.com/masautt/cpsc375-project-1/master/demographics.csv") 
     %>% select(`Country Name`, `Series Code`, `YR2015`) 
@@ -32,3 +34,7 @@ Demographics <- read_csv("https://raw.githubusercontent.com/masautt/cpsc375-proj
     %>% mutate(Country = replace(Country, Country == "Korea, Rep.", "South Korea"))
     %>% mutate(Country = replace(Country, Country == "Iran, Islamic Rep.", "Iran"))
     %>% filter(Country != "United States")
+
+Confirmed_PLUS_Deaths <- Confirmed %>% inner_join(Deaths)
+Demographics_PLUS_Beds = Demographics %>% inner_join(Beds)
+MainTable = Demographics_PLUS_Beds %>% inner_join(Confirmed_PLUS_Deaths)
